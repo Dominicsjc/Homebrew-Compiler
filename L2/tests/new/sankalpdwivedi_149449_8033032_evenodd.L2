@@ -1,0 +1,37 @@
+(:go
+(:go
+0
+%rccsd <- 1
+%helldsd <- 0
+r12 <- 1
+r13 <- 2
+:loop
+rdi <- %helldsd
+rdi <<= %rccsd
+rdi += 1
+
+call print 1
+r14 <- %helldsd
+r14 >>=%rccsd
+r14 <<=%rccsd
+cjump %helldsd=r14 :e
+rdi <- r12
+rdi <<= %rccsd
+rdi += 1
+call print 1
+%helldsd++
+rax <- %helldsd<=20
+cjump rax = 1 :loop
+:e
+rdi <- r13
+rdi <<= %rccsd
+rdi += 1
+call print 1
+%helldsd++
+rax <- %helldsd<=20
+cjump rax = 1 :loop
+rdi <- 5
+call print 1
+return
+)
+)

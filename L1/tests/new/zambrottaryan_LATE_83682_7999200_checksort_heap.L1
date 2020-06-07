@@ -1,0 +1,101 @@
+
+
+(:run_tests
+
+  (:run_tests
+    0 0
+
+    // generate test data
+    
+    // sort data
+    
+    // print data
+
+    mem rsp -8 <- :ret_null_array
+    call :create_null_array 0
+    :ret_null_array
+
+    // pass in first pointer
+    
+    rdi <- rax
+    rsi <- 6
+
+    mem rsp -8 <- :ret_array_check
+    call :check_sorted 2
+    :ret_array_check
+
+    // print if sorted or not
+    
+    call print 1
+
+    return)
+
+    
+    
+
+    (:create_null_array 
+    0 0
+
+    //set array parameters
+    rdi <- 6
+    rdi <<= 1
+    rdi += 1
+    
+    rsi <- 0
+    rsi <<= 1
+    rsi += 1
+    
+    // pointer to array
+    call allocate 2
+
+    // placeing 6 values
+    mem rax <- 7
+    mem rax 8 <- 42
+    mem rax 16 <- 13
+    mem rax 24 <- 16
+    mem rax 32 <- 774
+    mem rax 40 <- 209
+
+    return)
+
+    (:check_sorted
+    2 0 
+
+    rbp <- 1 // current element index into array
+    rbx <- 0 // memory offset
+
+    // need to put two values in register
+    :check_neighbor
+
+    // check for array bounds
+    cjump rsi <= rbp :pass_check
+
+    // move next two values into 
+    // getting previous value
+
+    r12 <- mem rbx 0
+
+    rbx += 8 // getting index value
+    r13 <- mem rbx
+    
+    // increment counter
+    rbp += 1
+    
+    // check if values are sorted
+    cjump r13 < r12 :fail_check
+
+    // restart loop
+    goto :check_neighbor
+
+
+    :fail_check
+    rax <- 1 // false encoded
+    goto :end_check_sorted
+    
+    :pass_check
+    rax <- 2 // true encoded
+    
+    :end_check_sorted
+    return
+    )   
+)

@@ -1,0 +1,26 @@
+define :main(){
+    %x <- 0
+    :loop
+    %squared <- call :square(%x)
+    call :print(%squared)
+    %done <- %x > 11
+    br %done :end
+    %x <- %x + 1
+    br :loop
+}
+define :square(%n){
+    %sq <- 0
+    %count <- %n
+    :loop
+    %sq <- %sq + %n
+    %count <- %count - 1
+    %done <- %count <= 0
+    br %done :loop
+    return %sq
+}
+define :print(%x){
+    %x <- %x << 1
+    %x <- %x + 1
+    call print(%x)
+    return
+}

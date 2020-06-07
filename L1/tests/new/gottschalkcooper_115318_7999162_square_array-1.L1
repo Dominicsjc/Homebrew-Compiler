@@ -1,0 +1,57 @@
+(:square_array
+  // square_array takes two arguments:
+  // - the memory location of the array to be read from
+  // - the length of the array to be read from
+  (:square_array
+   1 4
+   
+   r9 <- rdi // input array
+   r10 <- mem rdi 0 // length of input array
+   
+   rdi <- r10 // length of array to allocate
+   rsi <- 0   // allocate array with initial values of 0
+
+   call allocate 2
+   
+   r11 <- rax // output array
+   r8 <- 1 // loop counter
+
+   goto :square_test
+
+   :square_loop
+   rax @ r9 r8 8
+   rdi <- mem rax 0
+
+   mem rsp 0 <- r8
+   mem rsp 8 <- r9
+   mem rsp 16 <- r10
+   mem rsp 24 <- r11
+   mem rsp -8 <- :return_to_square_array
+
+   call square 1
+   
+   :return_to_square_array
+   r8 <- mem rsp 0
+   r9 <- mem rsp 8
+   r10 <- mem rsp 16
+   r11 <- mem rsp 24
+
+   rdi @ r11 r8 8
+   mem rdi 0 <- rax
+   r8++
+
+   :square_test
+   cjump r8 <= r10 :square_loop // if we haven't looped through the whole array, stop
+   rax <- r11
+   return
+  )
+
+  // square takes a single number as input, and returns the square of that number.
+  // it does not use any local variables
+  (:square
+   1 0
+   rax <- rdi
+   rax *= rax
+   return
+  )
+)

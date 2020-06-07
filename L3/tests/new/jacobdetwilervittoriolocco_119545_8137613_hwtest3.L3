@@ -1,0 +1,37 @@
+define :main() {
+    %rax <- call :make_array()
+    %var1 <- 2
+    %var2 <- 0
+    %var3 <- %var1 * 4
+    :por_aqui_viene
+
+    %r14 <- %rax + %var3
+    %temp <- load %r14
+    %var2 <- %temp + %var2
+
+    %var1 <- %var1 + 2
+    %test <- %len - %var1
+    br %test :por_aqui_viene
+
+    %var2 <- %var2 * 2
+    %len <- %var2 + 1
+    call print(%var2)
+
+    %rax <- call :make_array2()
+    call print(%rax) //will print a 10 and 10 4s because print displays decoded values from memory
+    return
+}
+
+define :make_array() {
+    %arg1 <- 201
+    %arg2 <- 17
+    %rax <- call allocate(%arg1,%arg2)
+    return %rax
+}
+
+define :make_array2() {
+     %arg1 <- 21
+     %arg2 <- 9
+     %rax <- call allocate(%arg1,%arg2)
+     return %rax
+}

@@ -1,0 +1,42 @@
+//return max of array that is of at least size 2
+define :main() {
+    %arr <- call allocate(100,0)
+    %size <- load %arr
+    %curr <- %arr + 8
+    %n <- 8
+    br :repeat
+
+    :repeat
+    %num <- 3 * %n
+    store %curr <- %num
+    %n <- %n + 1
+    %size <- %size - 1
+    br %size :repeat
+
+    %answer <- call :max(%arr)
+    return %answer
+}
+
+define :max(%array) {
+    %sizeOfArray <- load %array
+    %first <- %array + 8
+    %max <- load %first
+    %index <- 1
+    br :loop
+
+    :loop
+        %currMultFactor <- %index * 8
+        %curr <- %array + %currMultFactor
+        %temp <- load %curr
+        %newMax <- %temp - %max
+        br %newMax :setNewMax
+        :cont
+        %continue <- %size - %index
+        br %continue :loop
+
+    :setNewMax
+        %max <- %temp
+        br :cont
+
+    return %max
+}

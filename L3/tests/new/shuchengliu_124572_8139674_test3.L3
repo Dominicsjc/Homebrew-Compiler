@@ -1,0 +1,40 @@
+// Initialize an array, each following value is increment by one from the previous value
+
+define :main () {
+  0
+
+  call :init_array (11)
+
+  return
+}
+
+define :init_array (%length) {
+  1
+
+  %my_array_pointer <- call allocate (%length, 3)
+  
+  // index (not encoded)
+  %i <- 0
+
+  // save array pointer
+  %my_array <- %my_array_pointer
+
+  // current number to save
+  %current <- 1
+
+  :INIT
+
+  %my_array_pointer += 8
+
+  store %my_array_pointer <- %current
+
+  %i += 1
+  %current += 2
+
+  %cmp <- %i < %length
+  br %cmp :INIT
+
+  call print (%my_array)
+
+  return
+}

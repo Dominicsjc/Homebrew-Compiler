@@ -1,0 +1,36 @@
+// Count from 1 to 5, and then from 5 to 1
+
+define :main () {
+
+  call :inc (1)
+
+  call :dec (11)
+
+  return
+}
+
+define :inc (%v) {
+
+  :LOOP_INC
+
+  call print (%v)
+
+  %v += 2
+  %v1 <- %v <= 11
+  br %v1 :LOOP_INC
+
+  return
+}
+
+define :dec (%v) {
+
+  :LOOP_DEC
+
+  call print (%v)
+  
+  %v -= 2
+  %v1 <- %v >= 1
+  br %v1 :LOOP_DEC
+
+  return
+}

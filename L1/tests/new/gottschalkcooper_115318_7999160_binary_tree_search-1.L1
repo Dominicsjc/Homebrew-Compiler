@@ -1,0 +1,63 @@
+(:binary_tree_search
+  // binary_tree_search takes two arguments:
+  // - a pointer to the root of the tree
+  // - the value being searched for
+  // it returns 1 if the value is found in the tree
+  // (specifically, the binary tree is structured as follows:
+  //  the root pointer points to a place in memory, the value
+  //  at that place in memory is the value of the root node,
+  //  and the 8 bytes immediately following those 8 bytes are
+  //  a pointer to the left child. The 8 bytes immediately after
+  //  the pointer to the left child are a pointer to the right
+  //  child. All the nodes are structured like this. If a child
+  //  pointer is 0, then that child doesn't exist.)
+  // it also prints out each node as it searches them.
+  (:binary_tree_search
+   2 0
+
+   r9 <- mem rdi 0 // get current node
+   r10 <- rdi
+   r11 <- rsi
+
+   rdi <- r9
+   call print 1
+
+   rdi <- r10
+   rsi <- r11
+   
+
+
+   // check if the current node is the value 
+   cjump r9 = rsi :present
+
+   // if it's not, recurse accordingly
+   cjump rsi < r9 :lesser
+   cjump r9 < rsi :greater
+
+   :lesser
+   r9 <- mem rdi 8
+   cjump r9 = 0 :absent
+   rdi <- r9
+   mem rsp -8 <- :end
+   call :binary_tree_search 2
+
+   :greater
+   r9 <- mem rdi 16
+   cjump r9 = 0 :absent
+   rdi <- r9
+   mem rsp -8 <- :end
+   call :binary_tree_search 2
+
+
+   :present
+   rax <- 1
+   goto :end   
+
+   :absent
+   rax <- 0
+   goto :end
+
+   :end
+   return
+  )
+)

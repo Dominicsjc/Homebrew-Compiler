@@ -1,0 +1,126 @@
+// Idea --- compute dot product
+// entrance --- calls create_arr twice to create two arrays, calls dot_product to compute dot product,
+//		prints both arrays and prints dot product value
+// create_arr --- creates array with init values (2 and 3)
+// dot_product --- computes dot product in one loop
+
+(:entrance
+	(:entrance
+		0
+		// 4 vars = size of arr, init value of array, array1, array2 (allocated using r12-r15)
+		
+		// length of both array (encoded, actual=10)
+		%arr_len <- 21
+		// initial value of each element in first array (encoded, actual=2)
+		%init_elm_val1 <- 5 
+	
+		// Allocate arguments to registers
+		rdi <- %arr_len
+		rsi <- %init_elm_val1
+	
+		// push return address for create_arr to stack
+		mem rsp -8 <- :create_arr_ret_1
+		// create first array
+		call :create_arr 2
+		:create_arr_ret_1
+		
+		// Save first array
+		%arr1 <- rax
+
+		// initial value of each element in second array (encoded, actual=3)
+		%init_elm_val2 <- 7
+
+		// Allocate arguments to registers
+		rdi <- %arr_len
+		rsi <- %init_elm_val2
+
+		// push return address for create_arr to stack
+		mem rsp -8 <- :create_arr_ret_2
+		// create first array
+		call :create_arr 2
+		:create_arr_ret_2
+
+		// Save second array
+		%arr2 <- rax
+	
+		// Allocate arguments to registers (this time --- two arrays, array len)
+		rdi <- %arr1
+		rsi <- %arr2
+		// Pass "unencoded value" for len
+		rdx <- 21
+
+		// push return address for dot_product to stack
+		mem rsp -8 <- :dot_product_ret
+		// compute dot product
+		call :dot_product 0
+		:dot_product_ret
+	
+		// print dot product (should be 60)
+		rdi <- rax
+		call print 1
+		// print first array
+		rdi <- %arr1
+		call print 1
+		// print second array
+		rdi <- %arr2
+		call print 1
+
+		return
+	
+	)
+
+	(:create_arr
+		2	
+		// allocate array based on rdi and rsi (arguments passed)
+		call allocate 2
+		return
+	)
+
+	(:dot_product
+		3
+		// rdi, rsi --- arrays, rdx --- array len
+		// sum
+        // rbx
+		%sum <- 1
+		// rdx index of element (based on slides --- seems to start at 1)
+		%index <- 1
+
+        %len <- rdx
+        %arr1 <- rdi
+        %arr2 <- rsi
+		
+		:loop
+		cjump %len <= 0 :loopexit		
+		
+		// set rcx, rbx to next value in array
+		%rcx @ %arr1 %index 8
+		%rcx <- mem %rcx 0
+		
+		// decode value to set up local product
+		//%rcx >>= 1
+		
+		%rdx @ %arr2 %index 8
+		%rdx <- mem %rdx 0		
+		
+		// decode value to set up local product
+		//rdx >>= 1
+
+		// Safe to use r10 at this point		
+		%temp <- %rcx
+		%temp *= %rdx
+		%sum += %temp
+
+		// decrement counter, increase index
+		%len -= 1
+		%index += 1
+		goto :loop
+		:loopexit
+		
+		// encode value for printing
+		%sum >>= 2
+        %sum -= 1
+	
+		rax <- %sum
+		return
+	)
+)

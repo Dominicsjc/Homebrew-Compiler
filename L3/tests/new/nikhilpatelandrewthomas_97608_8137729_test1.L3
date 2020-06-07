@@ -1,0 +1,36 @@
+define :main (){ 
+		%array <- call allocate (5, 7)
+		%print1 <- call :findLen(%array)
+		%print2 <- call :findSum(%array)
+		//Should print 6 (sum of elements)
+		call print (%print1)
+		//Should print 2 (length)
+		call print (%print2)
+		return
+}
+define :findSum (%array) { 
+		%ret <- 0
+		%var1 <- load %array
+		%var2 <- 0
+		:START
+		%array <- %array >> 1
+		%array <- %array + 4
+		%array <- %array << 1
+		%test <- %var1 <= %var2 
+		br %test :END
+		%var3 <- %array
+		%var3 <- %var3 >> 1
+		%ret <- %ret + %var3
+		%var2 <- %var2 + 1
+		br :START
+		:END
+		%ret <- %ret << 1
+		%ret <- %ret + 1
+		return %ret
+}
+define :findLen (%array) { 
+		%ret <- load %array
+		%ret <- %ret <<= 1
+		%ret <- %ret + 1
+		return %ret
+}

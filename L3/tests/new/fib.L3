@@ -1,0 +1,31 @@
+define :main(){
+    %x <- 1
+    :mainloop
+    %done <- 21 < %x
+    br %done :end
+    call :fib(%x)
+    call :print(%x)
+    %x <- %x + 1
+    br :mainloop
+    :end
+    return
+}
+
+define :fib(%x){
+    %x0 <- 1
+    %x1 <- 0
+    :fibloop
+    %tmp <- %x0
+    %x0 <- %x0 + %x1
+    %x1 <- %tmp
+    %x <- %x - 1
+    %done <- %x <= 0
+    br %done :fibloop
+    return
+}
+define :print(%x){
+    %x <- %x << 1
+    %x <- %x + 1
+    call print(%x)
+    return
+}

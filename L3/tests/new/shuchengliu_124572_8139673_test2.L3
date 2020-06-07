@@ -1,0 +1,46 @@
+// Recursively calculate the nth fib number
+
+define :main () {
+
+  %n <- 15
+
+  %f <- call :fib (%n)
+
+  call print (%f)
+
+  return
+}
+
+define :fib(%f) {
+
+  // jump if == 0
+  %cmp <- %f = 1
+  br %cmp :BASE_0
+  // jump if == 1
+  %cmp <- %f = 3
+  br %cmp :BASE_1
+
+  // recursive
+  // n >= 2
+  %f -= 2
+
+  // first recursive call
+  %ret1 <- call :fib (%f)
+
+  %f -= 2
+
+  // second recursive call
+  %ret2 <- call :fib (%fib)
+
+  %ret1 += %ret2
+
+  return %ret1
+
+  :BASE_0
+  // n = 1
+  return 1
+
+  :BASE_1
+  // n = 1
+  return 3
+}

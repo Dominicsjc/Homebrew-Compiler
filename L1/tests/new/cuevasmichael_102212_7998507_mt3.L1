@@ -1,0 +1,122 @@
+// Idea --- compute dot product
+// entrance --- calls create_arr twice to create two arrays, calls dot_product to compute dot product,
+//		prints both arrays and prints dot product value
+// create_arr --- creates array, each element is an increasing multiple of the initial value given (NOT 
+//		  IMPLEMENTED)
+// dot_product --- computes dot product in one loop
+
+(:entrance
+	(:entrance
+		0 4
+		// 4 locals = size of arr, init value of array, array1, array2 (allocated using r12-r15)
+		
+		// length of both array (encoded, actual=10)
+		r12 <- 21
+		// initial value of each element in first array (encoded, actual=2)
+		r13 <- 5 
+	
+		// Allocate arguments to registers
+		rdi <- r12
+		rsi <- r13
+	
+		// push return address for create_arr to stack
+		mem rsp -8 <- :create_arr_ret_1
+		// create first array
+		call :create_arr 2
+		:create_arr_ret_1
+		
+		// Save first array
+		r14 <- rax
+
+		// initial value of each element in second array (encoded, actual=3)
+		r13 <- 7
+
+		// Allocate arguments to registers
+		rdi <- r12
+		rsi <- r13
+
+		// push return address for create_arr to stack
+		mem rsp -8 <- :create_arr_ret_2
+		// create first array
+		call :create_arr 2
+		:create_arr_ret_2
+
+		// Save second array
+		r15 <- rax
+	
+		// Allocate arguments to registers (this time --- two arrays, array len)
+		rdi <- r14
+		rsi <- r15
+		// Pass "unencoded value" for len
+		rdx <- 10
+
+		// push return address for dot_product to stack
+		mem rsp -8 <- :dot_product_ret
+		// compute dot product
+		call :dot_product 3
+		:dot_product_ret
+	
+		// print dot product
+		rdi <- rax
+		call print 1
+		// print first array
+		rdi <- r14
+		call print 1
+		// print second array
+		rdi <- r15
+		call print 1
+
+		return
+	
+	)
+
+	(:create_arr
+		2 0		
+		// allocate array based on rdi and rsi (arguments passed)
+		call allocate 2
+		
+		// LATER
+		// store pointer to array in r10
+		// r10 <- rax
+		// set up counter
+		// r11 <- 0
+		// modify the array so that each element of the array is 
+		// an increasing multiple of the initial value	
+		
+		return
+	)
+
+	(:dot_product
+		3 5
+		// rdi, rsi --- arrays, rdx --- array len
+		// sum
+		r8 <- 0
+		// index of element (based on slides --- seems to start at 1)
+		r9 <- 1
+		
+		:loop
+		cjump rdx <= 0 :loopexit		
+		
+		// set rcx, rbx to next value in array
+		rcx @ rdi r9 8
+		rbx @ rsi r9 8
+
+		// Safe to use r10 at this point		
+		r10 <- rcx
+		r10 *= rcx
+		r8 += r10
+		rdx -= 1
+		r9 += 1
+		goto :loop
+		:loopexit
+		
+		rax <- r8
+		return
+	)
+)
+
+		 	
+
+
+
+	

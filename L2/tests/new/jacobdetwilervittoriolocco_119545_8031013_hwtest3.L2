@@ -1,0 +1,54 @@
+//This creates an array, sums the elements, and the prints half the result
+(:hwtest3
+    (:hwtest3 0 
+        mem rsp -8 <- :ret1 //store return address on stack
+        call :make_array 0
+	 
+	:ret1
+	
+	%var1 <- 2
+	%var2 <- 0
+
+	:ret2
+	r14 @ rax %var1 4
+	%var2 += mem r14 0
+	
+	%var1 += 2
+	cjump %var1 <= rdi :ret2
+
+	rdi <- %var2
+	// print has the effect of decoding x64 to x63 and thus halfs the number and will print 850 because int63 from int64 1700
+	rdi *= 2
+	rdi += 1
+	
+	call print 1
+
+	mem rsp -8 <- :ret3 //store return address on stack
+	call :make_array2 0
+	:ret3
+	rdi <- rax
+	call print 1 //will print a 10 and 10 4s because print displays decoded values from memory
+	return
+    )
+
+    (:make_array 0 
+        rdi <- 201 //pass in arg1
+	mem rsp 0 <- rdi
+	
+        rsi <- 17 //pass in arg2
+	call allocate 2
+	
+	rdi <- mem rsp 0
+        return 
+    )
+
+    (:make_array2 0 
+        rdi <- 21 //pass in arg1
+        rsi <- 9 //pass in arg2
+        call allocate 2
+
+        return
+    )
+
+)
+

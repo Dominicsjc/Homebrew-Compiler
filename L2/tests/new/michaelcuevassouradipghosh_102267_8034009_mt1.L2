@@ -1,0 +1,61 @@
+(:entrance
+  (:entrance
+    0
+// put variables into registers
+    rdi <- 15
+    rsi <- 17
+    rdx <- 9
+    rcx <- 5
+    r8 <- 7
+    r9 <- 13
+// place a variable into a caller saved register
+    //r10 <- 1
+    %my1stVar <- 1
+// Save caller saved register onto stack
+    //mem rsp -8 <- r10
+    //rsp -= 8
+// push return address onto the stack
+    mem rsp -8 <- :f1_ret
+    call :f1 6
+// where call to f1 will return to
+    :f1_ret
+// take caller saved register off the stack
+    //r10 <- mem rsp 0
+    //rsp += 8
+// put rax into a callee saved register
+    //mem rsp -8 <- r12
+    //rsp -= 8
+    %my2ndVar <- rax
+    //r12 <- rax
+// call library function (should print 0)
+    //rdi <- r10
+    rdi <- %my1stVar
+    call print 1
+// put return value of f1 into first arg register
+    //rdi <- r12
+    rdi <- %my2ndVar
+    rdi++
+// call library function again (should print 33)
+    call print 1
+// restore value of r12
+    //r12 <- mem rsp 0
+    //r12 <- %my2ndVar
+    //rsp += 8
+// return with value 0
+    rax <- 1
+    return
+    )
+    (:f1
+    6
+// add all 6 arguments together into caller saved register
+    r10 <- rdi
+    r10 += rsi
+    r10 += rdx
+    r10 += rcx
+    r10 += r8
+    r10 += r9
+// return with value of the 6 additions
+    rax <- r10
+    return
+    )
+)
